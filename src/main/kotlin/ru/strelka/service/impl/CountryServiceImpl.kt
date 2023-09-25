@@ -29,11 +29,36 @@ class CountryServiceImpl(
 
     }
 
+    override fun create(dto: CountryDto): Int {
+        return countryRepo.save(dto.toEntity()).id
+    }
+
+    override fun update(id: Int, dto: CountryDto): CountryDto {
+        val existingCountry = countryRepo.findByIdOrNull(id) ?: throw RuntimeException("Country not found")
+        existingCountry.name = dto.name
+        existingCountry.population = dto.population
+        return countryRepo.save(existingCountry).toDto()
+    }
+
+    override fun delete(id: Int) {
+        val existingCountry = countryRepo.findByIdOrNull(id) ?: throw RuntimeException("Country not found")
+        countryRepo.deleteById(existingCountry.id)
+    }
+
     private fun CountryEntity.toDto(): CountryDto {
         return CountryDto(
             id = this.id,
             name = this.name,
             population = this.population
+        )
+    }
+
+    private fun CountryDto.toEntity(): CountryEntity {
+        return CountryEntity(
+            id = 0,
+            name = this.name,
+            population = this.population
+
         )
     }
 }

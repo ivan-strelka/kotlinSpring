@@ -8,5 +8,11 @@ interface CountryService {
 
     fun findById(id: Int): CountryDto
 
-    fun search(prefix: String):List<CountryDto>
+    fun search(prefix: String): List<CountryDto>
+
+    fun create(dto: CountryDto): Int
+
+    fun update(id: Int, dto: CountryDto): CountryDto
+
+    fun delete(id: Int)
 }

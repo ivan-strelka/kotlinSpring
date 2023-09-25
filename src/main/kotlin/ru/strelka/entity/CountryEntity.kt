@@ -8,6 +8,6 @@ class CountryEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int = 0,
-    val name: String = "",
-    val population: Int = 0
+    var name: String = "",
+    var population: Int = 0
 )
