@@ -5,6 +5,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import ru.strelka.dto.CountryDto
 import ru.strelka.entity.CountryEntity
+import ru.strelka.exception.CountryNotFoundException
 import ru.strelka.repository.CountryRepo
 import ru.strelka.service.CountryService
 
@@ -21,7 +22,7 @@ class CountryServiceImpl(
     override fun findById(id: Int): CountryDto {
         return countryRepo.findByIdOrNull(id)
             ?.toDto()
-            ?: throw RuntimeException("Country not found")
+            ?: throw CountryNotFoundException(id)
     }
 
     override fun search(prefix: String): List<CountryDto> {
@@ -34,14 +35,14 @@ class CountryServiceImpl(
     }
 
     override fun update(id: Int, dto: CountryDto): CountryDto {
-        val existingCountry = countryRepo.findByIdOrNull(id) ?: throw RuntimeException("Country not found")
+        val existingCountry = countryRepo.findByIdOrNull(id) ?: throw CountryNotFoundException(id)
         existingCountry.name = dto.name
         existingCountry.population = dto.population
         return countryRepo.save(existingCountry).toDto()
     }
 
     override fun delete(id: Int) {
-        val existingCountry = countryRepo.findByIdOrNull(id) ?: throw RuntimeException("Country not found")
+        val existingCountry = countryRepo.findByIdOrNull(id) ?: throw CountryNotFoundException(id)
         countryRepo.deleteById(existingCountry.id)
     }
 

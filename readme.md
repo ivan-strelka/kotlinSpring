@@ -1,1 +1,1 @@
-# !
+# REST Service - Kotlin + Spring Data JPA + PostgreSQL
