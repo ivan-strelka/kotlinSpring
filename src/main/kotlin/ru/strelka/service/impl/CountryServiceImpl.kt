@@ -1,6 +1,7 @@
 package ru.strelka.service.impl
 
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import ru.strelka.dto.CountryDto
 import ru.strelka.entity.CountryEntity
@@ -15,6 +16,17 @@ class CountryServiceImpl(
         return countryRepo.findByOrderByName(PageRequest.of(pageIndex, 3)).map {
             it.toDto()
         }
+    }
+
+    override fun findById(id: Int): CountryDto {
+        return countryRepo.findByIdOrNull(id)
+            ?.toDto()
+            ?: throw RuntimeException("Country not found")
+    }
+
+    override fun search(prefix: String): List<CountryDto> {
+        return countryRepo.findByNameStartsWithIgnoreCaseOrderByName(prefix).map { it.toDto() }
+
     }
 
     private fun CountryEntity.toDto(): CountryDto {
