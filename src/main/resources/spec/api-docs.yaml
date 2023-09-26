@@ -1,0 +1,190 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+tags:
+- name: Страны
+  description: Все методы для работы со странами
+paths:
+  /countries/{id}:
+    get:
+      tags:
+      - Страны
+      summary: Найти страну по Id
+      operationId: getById
+      parameters:
+      - name: id
+        in: path
+        description: id пользователя
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CountryDto'
+    put:
+      tags:
+      - Страны
+      summary: Обновить страну по id
+      operationId: update
+      parameters:
+      - name: id
+        in: path
+        description: id пользователя
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CountryDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CountryDto'
+    delete:
+      tags:
+      - Страны
+      summary: Удалить страну по id
+      operationId: delete
+      parameters:
+      - name: id
+        in: path
+        description: id пользователя
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+  /countries:
+    get:
+      tags:
+      - Страны
+      summary: Получить все страны
+      operationId: gelAll
+      parameters:
+      - name: page
+        in: query
+        description: номер страницы
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CountryDto'
+    post:
+      tags:
+      - Страны
+      summary: Создать страну
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CountryDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: integer
+                format: int32
+  /countries/search:
+    get:
+      tags:
+      - Страны
+      summary: Найти страну по названию
+      operationId: searchCountries
+      parameters:
+      - name: prefix
+        in: query
+        description: префикс страны
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CountryDto'
+  /countries/names:
+    get:
+      tags:
+      - Страны
+      summary: Получить список всех стран
+      operationId: getCountyNames
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+components:
+  schemas:
+    CityDto:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Имя
+      description: Информация о городе
+    CountryDto:
+      required:
+      - cities
+      - name
+      - population
+      type: object
+      properties:
+        id:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Идентификатор
+          format: int32
+        name:
+          type: string
+          description: Имя
+        population:
+          type: integer
+          description: Население
+          format: int32
+        cities:
+          type: array
+          description: Города
+          items:
+            $ref: '#/components/schemas/CityDto'
+      description: Информация о стране

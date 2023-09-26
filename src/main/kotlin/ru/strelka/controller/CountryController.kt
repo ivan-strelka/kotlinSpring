@@ -1,5 +1,8 @@
 package ru.strelka.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -14,33 +17,63 @@ import ru.strelka.service.CountryService
 
 @RestController
 @RequestMapping("/countries")
+@Tag(
+    name = "Страны",
+    description = "Все методы для работы со странами",
+)
 class CountryController(
     private val countryService: CountryService,
 ) {
     @GetMapping
-    fun gelAll(@RequestParam("page") pageIndex: Int): List<CountryDto> = countryService.gelAll(pageIndex)
+    @Operation(summary = "Получить все страны")
+    fun gelAll(
+        @Parameter(description = "номер страницы")
+        @RequestParam("page") pageIndex: Int
+    ): List<CountryDto> =
+        countryService.gelAll(pageIndex)
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable("id") id: Int): CountryDto = countryService.findById(id)
+    @Operation(summary = "Найти страну по Id")
+    fun getById(
+        @Parameter(description = "id пользователя")
+        @PathVariable("id") id: Int
+    ): CountryDto =
+        countryService.findById(id)
 
     @GetMapping("/search")
-    fun searchCountries(@RequestParam("prefix") prefix: String): List<CountryDto> = countryService.search(prefix)
+    @Operation(summary = "Найти страну по названию")
+    fun searchCountries(
+        @Parameter(description = "префикс страны")
+        @RequestParam("prefix") prefix: String
+    ): List<CountryDto> = countryService.search(prefix)
 
     @GetMapping("/names")
+    @Operation(summary = "Получить список всех стран")
     fun getCountyNames(): List<String> = countryService.getCountyNames()
 
     @PostMapping
-    fun create(@RequestBody dto: CountryDto): Int {
+    @Operation(summary = "Создать страну")
+    fun create(
+        @RequestBody dto: CountryDto
+    ): Int {
         return countryService.create(dto)
     }
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: Int, @RequestBody dto: CountryDto): CountryDto {
+    @Operation(summary = "Обновить страну по id")
+    fun update(
+        @Parameter(description = "id пользователя")
+        @PathVariable id: Int,
+        @RequestBody dto: CountryDto
+    ): CountryDto {
         return countryService.update(id, dto)
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Int) {
+    @Operation(summary = "Удалить страну по id")
+    fun delete(
+        @Parameter(description = "id пользователя")
+        @PathVariable id: Int) {
         countryService.delete(id)
     }
 
