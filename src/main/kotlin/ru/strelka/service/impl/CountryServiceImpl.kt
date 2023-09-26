@@ -8,12 +8,15 @@ import ru.strelka.dto.CountryDto
 import ru.strelka.entity.CityEntity
 import ru.strelka.entity.CountryEntity
 import ru.strelka.exception.CountryNotFoundException
+import ru.strelka.repository.CityRepo
 import ru.strelka.repository.CountryRepo
 import ru.strelka.service.CountryService
+import javax.transaction.Transactional
 
 @Service
 class CountryServiceImpl(
     private val countryRepo: CountryRepo,
+    private val cityRepo: CityRepo,
 ) : CountryService {
     override fun gelAll(pageIndex: Int): List<CountryDto> {
         return countryRepo.findByOrderByName(PageRequest.of(pageIndex, 3)).map {
@@ -32,19 +35,37 @@ class CountryServiceImpl(
 
     }
 
+    @Transactional
     override fun create(dto: CountryDto): Int {
-        return countryRepo.save(dto.toEntity()).id
+        val countryEntity = countryRepo.save(dto.toEntity())
+        val cities = dto.cities.map { it.toEntity(countryEntity) }
+        cityRepo.saveAll(cities)
+
+        return countryEntity.id
     }
 
+    @Transactional
     override fun update(id: Int, dto: CountryDto): CountryDto {
-        val existingCountry = countryRepo.findByIdOrNull(id) ?: throw CountryNotFoundException(id)
+        var existingCountry = countryRepo.findByIdOrNull(id) ?: throw CountryNotFoundException(id)
+
         existingCountry.name = dto.name
         existingCountry.population = dto.population
-        return countryRepo.save(existingCountry).toDto()
+
+        existingCountry = countryRepo.save(existingCountry)
+
+        val cities = dto.cities.map { it.toEntity(existingCountry) }
+
+        cityRepo.deleteAllByCountry(existingCountry)
+        return cityRepo.saveAll(cities).map { it.country.toDto() }.first()
+
     }
 
+    @Transactional
     override fun delete(id: Int) {
         val existingCountry = countryRepo.findByIdOrNull(id) ?: throw CountryNotFoundException(id)
+
+        cityRepo.deleteAllByCountry(existingCountry)
+
         countryRepo.deleteById(existingCountry.id)
     }
 
@@ -70,4 +91,11 @@ class CountryServiceImpl(
 
         )
     }
+
+    private fun CityDto.toEntity(country: CountryEntity): CityEntity =
+        CityEntity(
+            id = 0,
+            name = this.name,
+            country = country
+        )
 }
