@@ -15,4 +15,6 @@ interface CountryService {
     fun update(id: Int, dto: CountryDto): CountryDto
 
     fun delete(id: Int)
+
+    fun getCountyNames():List<String>
 }

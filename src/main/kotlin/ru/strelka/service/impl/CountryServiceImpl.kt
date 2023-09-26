@@ -69,6 +69,10 @@ class CountryServiceImpl(
         countryRepo.deleteById(existingCountry.id)
     }
 
+    override fun getCountyNames(): List<String> {
+        return countryRepo.findAllByOrderByName().map { it.name }
+    }
+
     private fun CountryEntity.toDto(): CountryDto {
         return CountryDto(
             id = this.id,
