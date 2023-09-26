@@ -10,4 +10,4 @@
 3. http://localhost:8080/swagger-ui/index.html#/
 
 ![Swagger1.jpg](src%2Fmain%2Fresources%2Ffiles%2FSwagger1.jpg)
-![Swagger2.jpg](src%2Fmain%2Fresources%2Ffiles%2FSwagger2.jpg)
+![SwaggerEditor.jpg](src%2Fmain%2Fresources%2Ffiles%2FSwaggerEditor.jpg)
