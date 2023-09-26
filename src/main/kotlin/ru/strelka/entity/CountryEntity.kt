@@ -9,5 +9,7 @@ class CountryEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int = 0,
     var name: String = "",
-    var population: Int = 0
+    var population: Int = 0,
+    @OneToMany(mappedBy = "country", fetch = FetchType.EAGER)
+    var cities: List<CityEntity> = emptyList()
 )

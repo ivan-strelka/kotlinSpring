@@ -3,7 +3,9 @@ package ru.strelka.service.impl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import ru.strelka.dto.CityDto
 import ru.strelka.dto.CountryDto
+import ru.strelka.entity.CityEntity
 import ru.strelka.entity.CountryEntity
 import ru.strelka.exception.CountryNotFoundException
 import ru.strelka.repository.CountryRepo
@@ -50,9 +52,15 @@ class CountryServiceImpl(
         return CountryDto(
             id = this.id,
             name = this.name,
-            population = this.population
+            population = this.population,
+            cities = this.cities.map { it.toDto() }
         )
     }
+
+    private fun CityEntity.toDto(): CityDto =
+        CityDto(
+            name = this.name
+        )
 
     private fun CountryDto.toEntity(): CountryEntity {
         return CountryEntity(
